@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   tools {
-    maven 'Maven 3' // must match the name in Jenkins config
+    maven 'Maven 3' // Must match Jenkins tool name
   }
 
   parameters {
@@ -14,9 +14,13 @@ pipeline {
   }
 
   stages {
-    stage('Checkout') {
+    stage('Clone') {
       steps {
-        git branch: 'main', url: 'https://github.com/ZoraDevops/qa-automation-java.git'
+        // This clones the code and gives Jenkins better tracking of changes
+        checkout([$class: 'GitSCM',
+          branches: [[name: '*/main']],
+          userRemoteConfigs: [[url: 'https://github.com/ZoraDevops/qa-automation-java.git']]
+        ])
       }
     }
 
