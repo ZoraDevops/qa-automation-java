@@ -1,24 +1,29 @@
 pipeline {
   agent any
 
+  tools {
+    maven 'Maven 3' // must match the name in Jenkins config
+  }
+
   parameters {
     choice(name: 'ENVIRONMENT', choices: ['QA', 'UAT', 'PROD'], description: 'Select test environment')
+  }
+
+  environment {
+    TEST_ENV = "${params.ENVIRONMENT}"
   }
 
   stages {
     stage('Checkout') {
       steps {
-        git branch: 'main', url: 'https://github.com/your-org/your-repo.git'
+        git branch: 'main', url: 'https://github.com/ZoraDevops/qa-automation-java.git'
       }
     }
 
     stage('Build & Test') {
       steps {
-        sh 'mvn clean test -Denv=' + params.ENVIRONMENT
+        sh "mvn clean test -Denv=${TEST_ENV}"
       }
     }
   }
 }
-
-// This Jenkinsfile defines a pipeline that checks out code from a Git repository,
-// runs tests using Maven, and allows the user to select an environment for testing.
